@@ -42,6 +42,7 @@ func main() {
 			return
 		}
 
+		fmt.Printf("%s host is scanning\n", host)
 		var status bool
 		for port := port_s; port <= port_e; port++ {
 			status, err = CheckPort(host, strconv.Itoa(port))
