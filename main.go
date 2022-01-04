@@ -19,6 +19,7 @@ func main() {
 		fmt.Println("check only one port <./NetScanner -s -ip 192.168.0.1 -port 443>")
 		fmt.Println("check many(from to) ports <./NetScanner -sm -ip 192.168.0.1 -pr 22 444>")
 	case "-s":
+		// scan only one port
 		host, port, err := GetHostAndPort(os.Args)
 		if err != nil {
 			fmt.Printf("[warning] %s\n", err)
@@ -26,15 +27,14 @@ func main() {
 		}
 
 		fmt.Printf("%s host is scanning\n", host)
-		status, err := CheckPort(host, port)
-		if err != nil {
-			fmt.Println(err)
-		}
+		status := CheckPort(host, port)
+
 		if status {
 			fmt.Printf("port %s is opened\n", port)
 		} else {
 			fmt.Printf("port %s is closed\n", port)
 		}
+		// scan many ports
 	case "-sm":
 		host, port_s, port_e, err := GetHostAndPorts(os.Args)
 		if err != nil {
@@ -45,10 +45,8 @@ func main() {
 		fmt.Printf("%s host is scanning\n", host)
 		var status bool
 		for port := port_s; port <= port_e; port++ {
-			status, err = CheckPort(host, strconv.Itoa(port))
-			if err != nil {
-				fmt.Println(err)
-			}
+			status = CheckPort(host, strconv.Itoa(port))
+
 			if status {
 				fmt.Printf("port %d is opened\n", port)
 			} else {
@@ -79,11 +77,7 @@ func GetHostAndPort(Args []string) (string, string, error) {
 	return host, port, nil
 }
 
-func GetHostAndPorts(Args []string) (string, int, int, error) {
-	var host string
-	var port_s, port_e int
-	var err error
-
+func GetHostAndPorts(Args []string) (host string, port_s, port_e int, err error) {
 	for i, box := range Args {
 		switch box {
 		case "-ip":
@@ -103,17 +97,17 @@ func GetHostAndPorts(Args []string) (string, int, int, error) {
 	return host, port_s, port_e, nil
 }
 
-func CheckPort(host, port string) (bool, error) {
+func CheckPort(host, port string) bool {
 	conn, err := net.DialTimeout("tcp", net.JoinHostPort(host, port), 3*time.Second)
 
 	if err != nil {
-		return false, nil
+		return false
 	}
 
 	if conn != nil {
 		defer conn.Close()
-		return true, nil
+		return true
 	}
 
-	return false, nil
+	return false
 }
