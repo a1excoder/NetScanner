@@ -1,6 +1,7 @@
 package main
 
 import (
+	httpreqchecker "NetScanner/HttpReqChecker"
 	portchecker "NetScanner/PortChecker"
 	"fmt"
 	"os"
@@ -101,7 +102,7 @@ func main() {
 		// scan many ports and show only open
 
 		if len(os.Args) < 7 {
-			fmt.Println("[warning] for scanning many ports program need min 6 params")
+			fmt.Println("[warning] to scanning many ports program need min 6 params")
 			return
 		}
 
@@ -131,6 +132,20 @@ func main() {
 				fmt.Println()
 			}
 		}
+	case "-rg":
+		if len(os.Args) < 3 {
+			fmt.Println("[warning] to send Get request need 1 params")
+			return
+		}
+
+		answer, status_code, err := httpreqchecker.GetReq(os.Args[2])
+		if err != nil {
+			fmt.Printf("[warning] %s\n", err)
+			return
+		}
+
+		fmt.Printf("Code status: %d\n", status_code)
+		fmt.Println(answer)
 	default:
 		fmt.Println("[warning] unknown command")
 	}
