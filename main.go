@@ -25,6 +25,7 @@ func main() {
 		fmt.Println("check many(from to) ports and show only opened <./NetScanner -smo -ip 192.168.0.1 -pr 22 444>")
 		fmt.Println("check many(from to) ports and show only opened <./NetScanner -smo -ip 192.168.0.1 -pr 22 444 -t 2>")
 
+		fmt.Println("send an http request via Get and get a response <./NetScanner -rg https://jsonplaceholder.typicode.com/posts/1>")
 	case "-s":
 		// scan only one port
 
@@ -133,6 +134,8 @@ func main() {
 			}
 		}
 	case "-rg":
+		// send an http request via Get and get a response
+
 		if len(os.Args) < 3 {
 			fmt.Println("[warning] to send Get request need 1 params")
 			return
